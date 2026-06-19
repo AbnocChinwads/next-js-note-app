@@ -33,16 +33,21 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <section>
+      <div>
       <input
         type="text"
         className="border resize p-2 my-2"
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
+      <div>
       <button className="border p-1" onClick={handleSubmit}>
         {editIndex !== null ? "Save" : "Add Note"}
       </button>
+      </div>
+      </div>
+      <div>
       <ol className="p-2">
         {notes.map((item, index) => (
           <li key={index}>
@@ -59,6 +64,7 @@ export default function Home() {
           </li>
         ))}
       </ol>
-    </main>
+      </div>
+    </section>
   );
 }
