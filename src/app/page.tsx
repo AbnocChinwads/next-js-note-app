@@ -1,11 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [note, setNote] = useState("");
-  const [notes, setNotes] = useState<string[]>([]);
+  const [notes, setNotes] = useState<string[]>(() => {
+    const savedNotes = localStorage.getItem("notes");
+
+    if (savedNotes) {
+      return (JSON.parse(savedNotes));
+    }
+
+    return [];
+  });
+
   const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
 
   function handleSubmit() {
     if (!note.trim()) return;
@@ -35,35 +48,38 @@ export default function Home() {
   return (
     <section>
       <div>
-      <input
-        type="text"
-        className="border resize p-2 my-2"
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-      />
-      <div>
-      <button className="border p-1" onClick={handleSubmit}>
-        {editIndex !== null ? "Save" : "Add Note"}
-      </button>
+        <input
+          type="text"
+          className="border resize p-2 my-2"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
+        <div>
+          <button className="border p-1" onClick={handleSubmit}>
+            {editIndex !== null ? "Save" : "Add Note"}
+          </button>
+        </div>
       </div>
-      </div>
       <div>
-      <ol className="p-2">
-        {notes.map((item, index) => (
-          <li key={index}>
-            {item}
-            <button className="ml-1"
-              onClick={() => {
-                setNote(item);
-                setEditIndex(index);
-              }}
-            >
-              Edit
-            </button>
-            <button className="ml-1" onClick={() => deleteNote(index)}>Delete</button>
-          </li>
-        ))}
-      </ol>
+        <ol className="p-2">
+          {notes.map((item, index) => (
+            <li key={index}>
+              {item}
+              <button
+                className="ml-1"
+                onClick={() => {
+                  setNote(item);
+                  setEditIndex(index);
+                }}
+              >
+                Edit
+              </button>
+              <button className="ml-1" onClick={() => deleteNote(index)}>
+                Delete
+              </button>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );
